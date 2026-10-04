@@ -453,3 +453,5 @@
 
 ## 22. Giả lập dự án thực tế
   [Mô phỏng giả lập](Simulation.md)
+
+  [Video](https://ptiteduvn-my.sharepoint.com/:v:/g/personal/taind_b24cn510_stu_ptit_edu_vn/IQDVCE0cb5XjRYENKx8L-9AnAQQZqn-w2cOIIpM3rhwsZE0?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=YSYZnV)
