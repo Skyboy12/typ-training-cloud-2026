@@ -357,7 +357,7 @@
 
 - **Quy trình giải quyết xung đột**
   - `git switch` sang branch cần merge
-  - `git pull` hoặc `git fletch` để tải thay đổi từ remote
+  - `git pull` hoặc `git fetch` để tải thay đổi từ remote
   - `git merge <branch-name>` để merge thay đổi
   - Giải quyết conflict
   - `git add <file-name>` để đánh dấu đã giải quyết.
