@@ -399,7 +399,7 @@ echo "Hello, World!"  # In ra màn hình dòng chữ "Hello, World!"
     done
     ```
 - Cấu trúc điều kiện trong shell script cho phép thực hiện các khối lệnh khác nhau dựa trên kết quả của một điều kiện. Cấu trúc điều kiện phổ biến trong shell script bao gồm:
-    - Cấu trúc `if-else`: Dùng để kiểm tra một điều kiện và thực hiện các khối lệnh khác nhau dựa trên kết quả. Ví dụ:
+    - Cấu trúc `if-then`: Dùng để kiểm tra một điều kiện và thực hiện các khối lệnh khác nhau dựa trên kết quả. Ví dụ:
     ```bash
     if [ $age -ge 18 ]; then
         echo "You are an adult."
