@@ -3,20 +3,20 @@
 # Tasks cho Role: cloud_note_deploy - Triển khai 3-Tier Containers & Healthcheck
 # ==============================================================================
 
-- name: 1. Tạo thư mục triển khai ứng dụng trên Target Linux VM
+- name: 1. Tạo thư mục triển khai ứng dụng trên Target Container VM
   ansible.builtin.file:
     path: "{{ deploy_dir }}"
     state: directory
-    owner: "{{ ansible_user | default('ubuntu') }}"
-    group: "{{ ansible_user | default('ubuntu') }}"
+    owner: "{{ ansible_user | default('skyboy12') }}"
+    group: "{{ ansible_user | default('skyboy12') }}"
     mode: "0755"
 
 - name: 2. Sinh file biến môi trường .env từ Jinja2 Template (Quyền 0600 bảo mật)
   ansible.builtin.template:
     src: .env.j2
     dest: "{{ deploy_dir }}/.env"
-    owner: "{{ ansible_user | default('ubuntu') }}"
-    group: "{{ ansible_user | default('ubuntu') }}"
+    owner: "{{ ansible_user | default('skyboy12') }}"
+    group: "{{ ansible_user | default('skyboy12') }}"
     mode: "0600"
   notify: Restart Cloud Note Stack
 
@@ -24,8 +24,8 @@
   ansible.builtin.template:
     src: compose.yaml.j2
     dest: "{{ deploy_dir }}/compose.yaml"
-    owner: "{{ ansible_user | default('ubuntu') }}"
-    group: "{{ ansible_user | default('ubuntu') }}"
+    owner: "{{ ansible_user | default('skyboy12') }}"
+    group: "{{ ansible_user | default('skyboy12') }}"
     mode: "0644"
   notify: Restart Cloud Note Stack
 

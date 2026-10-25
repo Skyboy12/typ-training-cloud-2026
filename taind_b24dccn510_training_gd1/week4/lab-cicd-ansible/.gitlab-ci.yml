@@ -103,8 +103,8 @@ deploy_to_vm_ansible:
   image: cytopia/ansible:latest-tools
   before_script:
     - mkdir -p ~/.ssh
-    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519
-    - chmod 600 ~/.ssh/id_ed25519
+    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519_ansible
+    - chmod 600 ~/.ssh/id_ed25519_ansible
   script:
     - echo "=== [CD] Trien khai ung dung len Target Linux VM bang Ansible Playbook ==="
     - cd ${ANSIBLE_PATH}

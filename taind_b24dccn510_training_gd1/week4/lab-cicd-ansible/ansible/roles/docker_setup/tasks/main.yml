@@ -33,7 +33,7 @@
 
 - name: 5. Thêm user vận hành vào group docker để chạy lệnh không cần sudo
   ansible.builtin.user:
-    name: "{{ ansible_user | default('ubuntu') }}"
+    name: "{{ ansible_user | default('skyboy12') }}"
     groups: docker
     append: true
 

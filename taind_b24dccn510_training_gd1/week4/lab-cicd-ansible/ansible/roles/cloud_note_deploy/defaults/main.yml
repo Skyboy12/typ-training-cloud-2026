@@ -2,7 +2,7 @@
 # ==============================================================================
 # Defaults cho Role: cloud_note_deploy (Độ ưu tiên thấp nhất, dễ ghi đè qua -e)
 # ==============================================================================
-deploy_dir: "/opt/cloud-note-app"
+deploy_dir: "/home/skyboy12/app"
 frontend_port: 8080
 backend_port: 5000
 
