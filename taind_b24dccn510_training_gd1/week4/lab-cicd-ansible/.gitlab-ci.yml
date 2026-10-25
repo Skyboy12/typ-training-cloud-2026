@@ -59,19 +59,10 @@ sast_and_unit_test:
 build_container_images:
   stage: build
   image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
   script:
     - echo "=== [CI] Build Multi-stage Docker Images cho Backend & Frontend ==="
     - docker build -t ${IMAGE_PREFIX}-backend:${APP_TAG} ${APP_PATH}/backend
     - docker build -t ${IMAGE_PREFIX}-frontend:${APP_TAG} ${APP_PATH}/frontend
-    - docker save ${IMAGE_PREFIX}-backend:${APP_TAG} -o backend_image.tar
-    - docker save ${IMAGE_PREFIX}-frontend:${APP_TAG} -o frontend_image.tar
-  artifacts:
-    paths:
-      - backend_image.tar
-      - frontend_image.tar
-    expire_in: 1 hour
 
 # ------------------------------------------------------------------------------
 # STAGE 3: CONTAINER IMAGE SCANNING (TRIVY SECURITY GATE) & PUSH TO REGISTRY
@@ -79,14 +70,10 @@ build_container_images:
 trivy_scan_and_push:
   stage: security_scan
   image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
   before_script:
     - apk add --no-cache curl
     - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
   script:
-    - docker load -i backend_image.tar
-    - docker load -i frontend_image.tar
     - echo "=== [DevSecOps] Quet lo hong CVE tren Container Images bang Trivy ==="
     - trivy image --ignorefile ${LAB_PATH}/.trivyignore --severity CRITICAL --ignore-unfixed --exit-code 1 ${IMAGE_PREFIX}-backend:${APP_TAG}
     - trivy image --ignorefile ${LAB_PATH}/.trivyignore --severity CRITICAL --ignore-unfixed --exit-code 1 ${IMAGE_PREFIX}-frontend:${APP_TAG}
