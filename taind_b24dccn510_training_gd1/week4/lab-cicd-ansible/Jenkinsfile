@@ -15,6 +15,7 @@ pipeline {
         TARGET_VM_IP    = credentials('target-vm-ip')
         IMAGE_PREFIX    = "${REGISTRY_USER}/cloud-note"
         APP_TAG         = "2.0.${BUILD_NUMBER}"
+        FALLBACK_TAG    = "2.0.0"
         APP_PATH        = "taind_b24dccn510_training_gd1/week3/app"
         LAB_PATH        = "taind_b24dccn510_training_gd1/week4/lab-cicd-ansible"
         ANSIBLE_PATH    = "${LAB_PATH}/ansible"
@@ -89,7 +90,7 @@ print('All Automated API Tests Passed!')
 
         stage('5. Automated Deploy via Ansible') {
             steps {
-                echo '=== [CD] Trien khai tu dong len Target Linux VM bang Ansible ==='
+                echo '=== [CD] Trien khai tu dong len Target Container VM bang Ansible ==='
                 sshagent(credentials: ['vm-ssh-private-key']) {
                     sh '''
                         cd ${ANSIBLE_PATH}
@@ -102,6 +103,22 @@ print('All Automated API Tests Passed!')
                     '''
                 }
             }
+            post {
+                failure {
+                    echo "=== [ROLLBACK] Deploy hoac Healthcheck that bai! Tu dong Rollback ve phien ban on dinh (${FALLBACK_TAG}) ==="
+                    sshagent(credentials: ['vm-ssh-private-key']) {
+                        sh '''
+                            cd ${ANSIBLE_PATH}
+                            ansible-playbook -i inventory/hosts.ini deploy.yml \
+                                -e "ansible_host=${TARGET_VM_IP}" \
+                                -e "backend_image=${IMAGE_PREFIX}-backend:${FALLBACK_TAG}" \
+                                -e "frontend_image=${IMAGE_PREFIX}-frontend:${FALLBACK_TAG}" \
+                                -e "db_password=${DB_PASSWORD}" \
+                                -e "db_root_password=${DB_ROOT_PASS}"
+                        '''
+                    }
+                }
+            }
         }
     }
 
@@ -111,6 +128,9 @@ print('All Automated API Tests Passed!')
         }
         success {
             echo "Pipeline thanh cong! Ung dung da duoc trien khai tai http://${TARGET_VM_IP}:8080"
+        }
+        failure {
+            echo "Pipeline that bai! Kiem tra log Security Gate hoac trang thai Rollback."
         }
     }
 }

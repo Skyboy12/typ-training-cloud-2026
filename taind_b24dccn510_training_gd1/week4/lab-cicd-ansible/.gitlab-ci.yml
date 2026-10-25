@@ -14,6 +14,7 @@ variables:
   DOCKER_REGISTRY: "docker.io"
   IMAGE_PREFIX: "${REGISTRY_USER}/cloud-note"
   APP_TAG: "2.0.${CI_PIPELINE_IID}"
+  FALLBACK_TAG: "2.0.0"
   APP_PATH: "taind_b24dccn510_training_gd1/week3/app"
   LAB_PATH: "taind_b24dccn510_training_gd1/week4/lab-cicd-ansible"
   ANSIBLE_PATH: "${LAB_PATH}/ansible"
@@ -93,14 +94,24 @@ deploy_to_vm_ansible:
     - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519_ansible
     - chmod 600 ~/.ssh/id_ed25519_ansible
   script:
-    - echo "=== [CD] Trien khai ung dung len Target Linux VM bang Ansible Playbook ==="
+    - echo "=== [CD] Trien khai ung dung len Target Container VM bang Ansible Playbook ==="
     - cd ${ANSIBLE_PATH}
-    - ansible-playbook -i inventory/hosts.ini deploy.yml
-        -e "ansible_host=${TARGET_VM_IP}"
-        -e "backend_image=${IMAGE_PREFIX}-backend:${APP_TAG}"
-        -e "frontend_image=${IMAGE_PREFIX}-frontend:${APP_TAG}"
-        -e "db_password=${DB_PASSWORD}"
-        -e "db_root_password=${DB_ROOT_PASSWORD}"
+    - |
+      ansible-playbook -i inventory/hosts.ini deploy.yml \
+        -e "ansible_host=${TARGET_VM_IP}" \
+        -e "backend_image=${IMAGE_PREFIX}-backend:${APP_TAG}" \
+        -e "frontend_image=${IMAGE_PREFIX}-frontend:${APP_TAG}" \
+        -e "db_password=${DB_PASSWORD}" \
+        -e "db_root_password=${DB_ROOT_PASSWORD}" || {
+          echo "=== [ROLLBACK] Deploy that bai! Tu dong Rollback ve ban on dinh (${FALLBACK_TAG}) ==="
+          ansible-playbook -i inventory/hosts.ini deploy.yml \
+            -e "ansible_host=${TARGET_VM_IP}" \
+            -e "backend_image=${IMAGE_PREFIX}-backend:${FALLBACK_TAG}" \
+            -e "frontend_image=${IMAGE_PREFIX}-frontend:${FALLBACK_TAG}" \
+            -e "db_password=${DB_PASSWORD}" \
+            -e "db_root_password=${DB_ROOT_PASSWORD}"
+          exit 1
+        }
   only:
     - main
 
